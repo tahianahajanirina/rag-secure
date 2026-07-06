@@ -1,0 +1,13 @@
+# Racine du projet — les règles sensibles (secrets/, .env, data/, logs/,
+# gguf_tmp/) sont dans rag-secure/.gitignore, au plus près de leur périmètre.
+
+# Artefacts Windows / éditeurs
+Thumbs.db
+Desktop.ini
+.DS_Store
+*.tmp
+
+# Python (au cas où un script tournerait à la racine)
+__pycache__/
+*.pyc
+

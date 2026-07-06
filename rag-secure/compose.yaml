@@ -1,0 +1,141 @@
+# ============================================================================
+# compose.yaml — P2 exploitation : réseau FERMÉ (S1, D6 — SPEC §3.1)
+# ----------------------------------------------------------------------------
+# Invariant 1 : rag-net est `internal: true` ; AUCUNE clé `ports:` sur rag-db
+# ni rag-ollama. En phase 1, aucun port n'est publié du tout.
+# Phase 2 : lancer avec l'override → docker compose -f compose.yaml
+#           -f compose.phase2.yaml up -d   (unique publication 127.0.0.1:8000)
+#
+# Lancé par scripts/02_up.ps1 (P1 d'abord : scripts/01_provision.ps1).
+# ============================================================================
+name: rag-secure
+
+services:
+  # --------------------------------------------------------------------------
+  # rag-db — PostgreSQL 17 + pgvector + pgaudit (S2–S5)
+  # --------------------------------------------------------------------------
+  rag-db:
+    build: ./docker/db
+    container_name: rag-db
+    # PAS de `ports:` ici (invariant 1) : joignable uniquement via rag-net.
+    environment:
+      # Le superutilisateur bootstrap EST rag_admin (SPEC §2.1) :
+      # créé par l'image elle-même, 01_roles.sh ne crée que les 3 autres rôles.
+      POSTGRES_USER: rag_admin
+      POSTGRES_DB: ragdb
+      POSTGRES_PASSWORD_FILE: /run/secrets_rag/pg_admin_pw
+      # Fichiers lus par initdb/01_roles.sh (hook shell)
+      PG_INGEST_PASSWORD_FILE: /run/secrets_rag/pg_ingest_pw
+      PG_READER_PASSWORD_FILE: /run/secrets_rag/pg_reader_pw
+      PG_AUDITOR_PASSWORD_FILE: /run/secrets_rag/pg_auditor_pw
+    # Configurations durcies copiées par le Dockerfile (scram, pgaudit,
+    # log_parameter=off — S2/S4/S5)
+    command:
+      - postgres
+      - -c
+      - config_file=/etc/postgresql/postgresql.conf
+      - -c
+      - hba_file=/etc/postgresql/pg_hba.conf
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      # Secrets montés RO : 01_roles.sh y lit les mots de passe des rôles.
+      # (Montés dans rag-db ET rag-app ; JAMAIS dans rag-ollama.)
+      - ./secrets:/run/secrets_rag:ro
+    networks:
+      - rag-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rag_admin -d ragdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+    restart: unless-stopped
+
+  # --------------------------------------------------------------------------
+  # rag-ollama — LLM + embeddings, GPU (D2/D3)
+  # --------------------------------------------------------------------------
+  rag-ollama:
+    # Tag épinglé (résiduel « confiance images » : épinglage, cf. NOTES §6).
+    # Si ce tag n'est plus disponible, ajuster ici ET dans compose.bootstrap.yaml.
+    image: ollama/ollama:0.9.0
+    container_name: rag-ollama
+    # PAS de `ports:` ici (invariant 1). L'API 11434 n'est joignable que
+    # depuis rag-net (rag-app). Aucun secret monté ici.
+    environment:
+      # Garde les modèles chargés 30 min (évite les rechargements lents en CPU
+      # entre deux requêtes). NB : sur un poste à mémoire très serrée (< 10 Go
+      # de RAM WSL2), ajouter `OLLAMA_MAX_LOADED_MODELS: "1"` pour ne garder
+      # qu'un modèle à la fois (évite l'OOM au prix de rechargements).
+      OLLAMA_KEEP_ALIVE: "30m"
+    volumes:
+      # Volume EXTERNE : le même que celui peuplé en P1 par
+      # compose.bootstrap.yaml (identité critique, SPEC §3.1) —
+      # créé par scripts/01_provision.ps1 (docker volume create).
+      - ollama_models:/root/.ollama
+    networks:
+      - rag-net
+    # --- GPU DÉSACTIVÉ (mode CPU) ---------------------------------------------
+    # Poste sans GPU exploitable (GTX 960M : 2 Go VRAM, driver 472.19 / CUDA
+    # 11.4 < CUDA 12.x requis par Ollama). La réservation ci-dessous EXIGERAIT
+    # un GPU et empêcherait rag-ollama de démarrer → on la laisse commentée.
+    # Pour réactiver sur une machine à GPU récent (≥ 6 Go VRAM, driver CUDA
+    # 12.x), décommenter ce bloc ET remettre LLM_MODEL=llama3.1:8b dans .env.
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
+    healthcheck:
+      # `ollama list` : le binaire EST dans l'image ; les clients HTTP en
+      # ligne de commande en sont ABSENTS — un healthcheck HTTP échouerait
+      # faute d'outil, pas faute de service (SPEC §3.1).
+      test: ["CMD", "ollama", "list"]
+      interval: 10s
+      timeout: 10s
+      retries: 12
+      start_period: 20s
+    restart: unless-stopped
+
+  # --------------------------------------------------------------------------
+  # rag-app — pipelines Python (CLI phase 1, + API phase 2 via l'override)
+  # --------------------------------------------------------------------------
+  rag-app:
+    build: ./docker/app
+    container_name: rag-app
+    env_file:
+      - .env
+    volumes:
+      - ./app:/app:ro          # code en lecture seule (immuable au runtime)
+      - ./data:/data:ro        # dataset (téléchargé en P1, jamais modifié)
+      - ./secrets:/run/secrets_rag:ro
+      - ./logs:/logs           # journaux applicatifs JSON (F12) — hors conteneur
+    networks:
+      - rag-net
+    depends_on:
+      rag-db:
+        condition: service_healthy
+      rag-ollama:
+        condition: service_healthy
+    # CRITIQUE (SPEC §3.1) : rag-app est un outil CLI piloté par docker exec ;
+    # sans process long, le conteneur sort immédiatement et tout
+    # `docker exec rag-app …` échoue (« is not running »).
+    # Phase 1 : idle. Phase 2 : compose.phase2.yaml remplace par uvicorn.
+    command: ["tail", "-f", "/dev/null"]
+    restart: unless-stopped
+
+networks:
+  # Réseau strictement interne : aucun routage vers l'extérieur (S1, D6).
+  rag-net:
+    driver: bridge
+    internal: true
+
+volumes:
+  pg_data:
+  # Identité du volume modèles (CRITIQUE, SPEC §3.1) : externe et nommé,
+  # pour être LE MÊME en P1 (bootstrap) et P2 — sinon Docker préfixe par
+  # projet et les modèles pullés en P1 seraient invisibles ici.
+  ollama_models:
+    external: true
+    name: rag_ollama_models

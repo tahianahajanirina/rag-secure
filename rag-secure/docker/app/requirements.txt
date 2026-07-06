@@ -1,0 +1,44 @@
+# ============================================================================
+# requirements.txt — rag-app (SPEC §3.1)
+# ----------------------------------------------------------------------------
+# Versions ÉPINGLÉES, issues d'une même génération compatible :
+#   - paquets langchain-* de la génération 0.3 (langchain-core 0.3.x est
+#     résolu par pip comme dépendance transitive commune — ne PAS mélanger
+#     avec la génération 1.x) ;
+#   - numpy 2.x, cohérent avec spacy 3.8 (thinc 8.3 supporte numpy >= 2).
+#
+# Mode « génération seule » : ces épingles n'ont pas pu être résolues/testées
+# par pip ici. Si le build P1 échoue sur un conflit de résolution, suivre la
+# procédure de récupération du README (§Dépannage) : réinstaller proprement
+# les paquets SANS numéros de version, puis `pip freeze > requirements.txt`.
+# ============================================================================
+
+# Orchestration LangChain (D4) — splitter, embeddings, LLM
+langchain==0.3.27
+langchain-text-splitters==0.3.9
+# Épinglé précisément : l'API des options (num_ctx, seed) a bougé selon les
+# versions (SPEC §3.4).
+langchain-ollama==0.3.6
+
+# Accès SQL explicite (D4) + adaptateur du type vector (invariant DoD :
+# sans register_vector, psycopg ne sait ni insérer ni relire un vecteur)
+psycopg[binary]==3.2.9
+pgvector==0.4.1
+
+# Explicite (pas d'import transitif) : integrity._canon_vec quantifie le
+# vecteur en float32 via np.asarray(v, dtype='<f4') (D11)
+numpy==2.2.6
+
+# Validation (API phase 2 + config typée)
+pydantic==2.11.7
+
+# Pseudonymisation NER (S6/D9) — le modèle en_core_web_sm est installé
+# au build de l'image (Dockerfile), pas ici
+spacy==3.8.7
+
+# Phase 2 : API web (D12)
+fastapi==0.115.14
+uvicorn==0.35.0
+
+# Tests unitaires (lançables sans Docker)
+pytest==8.4.1

@@ -1,0 +1,26 @@
+# Secrets et configuration sensible — JAMAIS versionnés (invariant 2)
+secrets/*
+!secrets/.gitkeep
+.env
+
+# Données et journaux locaux — non versionnés
+data/*
+!data/.gitkeep
+logs/*
+!logs/.gitkeep
+
+# GGUF temporaires (contournement HuggingFace — recopiés dans le volume Ollama)
+gguf_tmp/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.venv/
+venv/
+
+# Divers
+*.tmp
+.DS_Store
+Thumbs.db

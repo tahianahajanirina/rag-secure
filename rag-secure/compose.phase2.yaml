@@ -1,0 +1,37 @@
+# ============================================================================
+# compose.phase2.yaml — Override phase 2 : API web + DMZ rag-edge (D12/D13)
+# ----------------------------------------------------------------------------
+# Usage : docker compose -f compose.yaml -f compose.phase2.yaml up -d
+#         (scripts/02_up.ps1 -Phase2)
+#
+# Seul rag-app change : double rattachement réseau (rag-net interne +
+# rag-edge DMZ) et l'UNIQUE publication de port du projet, bornée au
+# loopback de l'hôte : 127.0.0.1:8000 (invariant 1 — jamais 0.0.0.0:...).
+# rag-db et rag-ollama restent exclusivement sur le réseau interne.
+# ============================================================================
+name: rag-secure
+
+services:
+  rag-app:
+    # L'API tourne en continu → remplace l'idle de la phase 1 (le conteneur
+    # reste vivant, et le CLI reste joignable par docker exec).
+    #
+    # NOTE (S1/D12) : uvicorn écoute ici sur les interfaces DU CONTENEUR
+    # (rag-net + rag-edge). Écouter 127.0.0.1 DANS le conteneur rendrait la
+    # publication inopérante : le proxy docker joint l'IP du conteneur sur
+    # rag-edge, pas son loopback interne. L'exposition côté hôte reste bornée
+    # par la clé `ports:` ci-dessous — le loopback de l'HÔTE uniquement.
+    command: ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "8000"]
+    networks:
+      rag-net: {}
+      rag-edge: {}
+    ports:
+      # UNIQUE publication du projet : loopback hôte seulement (D12).
+      - "127.0.0.1:8000:8000"
+
+networks:
+  # DMZ (motif segmentation du cours) : 2ᵉ carte réseau de rag-app, sans
+  # routage entre rag-edge et rag-net (docker n'inter-route pas les bridges).
+  # Non-internal : nécessaire au trajet hôte(loopback) → conteneur.
+  rag-edge:
+    driver: bridge

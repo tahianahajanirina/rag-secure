@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<!-- Phase 2 — UI minimale « poser une question » (D12/D13).
+     Invariant 11 : réponse rendue en TEXTE (textContent, jamais innerHTML
+     sur du contenu) ; ZÉRO ressource externe (style et script inline) ;
+     jeton saisi par l'utilisateur, jamais stocké en dur. -->
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RAG sécurisé — interrogation</title>
+  <style>
+    :root { color-scheme: light dark; }
+    body { font-family: system-ui, sans-serif; max-width: 60rem; margin: 2rem auto;
+           padding: 0 1rem; line-height: 1.5; }
+    h1 { font-size: 1.4rem; }
+    fieldset { border: 1px solid #8884; border-radius: 8px; margin-bottom: 1rem; }
+    label { display: block; margin-top: .6rem; font-weight: 600; }
+    textarea, input, select, button { font: inherit; width: 100%; box-sizing: border-box;
+           margin-top: .25rem; padding: .45rem; border-radius: 6px; border: 1px solid #8886; }
+    .ligne { display: flex; gap: 1rem; } .ligne > div { flex: 1; }
+    button { width: auto; padding: .5rem 1.4rem; cursor: pointer; margin-top: 1rem; }
+    #reponse { white-space: pre-wrap; border: 1px solid #8884; border-radius: 8px;
+           padding: 1rem; min-height: 3rem; }
+    #sources li { font-family: monospace; }
+    .alerte { color: #b00020; font-weight: 600; }
+    .info { color: #666; font-size: .9rem; }
+    footer { margin-top: 2rem; font-size: .8rem; color: #888; }
+  </style>
+</head>
+<body>
+  <h1>RAG sécurisé — poser une question</h1>
+  <p class="info">Corpus local (neural-bridge/rag-dataset-12000). Mode
+    « sans RAG » : aucun contexte injecté.</p>
+
+  <form id="formulaire">
+    <fieldset>
+      <legend>Question</legend>
+      <label for="question">Votre question</label>
+      <textarea id="question" rows="3" maxlength="2000" required
+                placeholder="Ex. : What is the Great Wall of China?"></textarea>
+      <div class="ligne">
+        <div>
+          <label for="mode">Mode</label>
+          <select id="mode">
+            <option value="rag" selected>Avec RAG (contexte du corpus)</option>
+            <option value="no-rag">Sans RAG (comparatif)</option>
+          </select>
+        </div>
+        <div>
+          <label for="k">Chunks récupérés (k)</label>
+          <input id="k" type="number" min="1" max="10" placeholder="défaut serveur">
+        </div>
+        <div>
+          <label for="jeton">Jeton d'API (X-API-Token)</label>
+          <input id="jeton" type="password" autocomplete="off" required>
+        </div>
+      </div>
+      <button type="submit" id="envoyer">Interroger</button>
+    </fieldset>
+  </form>
+
+  <h2>Réponse</h2>
+  <p id="etat" class="info"></p>
+  <div id="reponse"></div>
+  <h3>Sources</h3>
+  <ul id="sources"></ul>
+
+  <footer>DATA707 — environnement local isolé : ce service n'écoute que sur
+    127.0.0.1:8000.</footer>
+
+  <script>
+    "use strict";
+    // Zéro dépendance externe. Le contenu renvoyé par l'API est TOUJOURS
+    // inséré via textContent/createTextNode : le navigateur ne peut pas
+    // l'interpréter comme du HTML (anti-XSS, invariant 11).
+    const formulaire = document.getElementById("formulaire");
+    const etat = document.getElementById("etat");
+    const reponse = document.getElementById("reponse");
+    const sources = document.getElementById("sources");
+    const bouton = document.getElementById("envoyer");
+
+    formulaire.addEventListener("submit", async (evenement) => {
+      evenement.preventDefault();
+      etat.textContent = "Interrogation en cours…";
+      etat.classList.remove("alerte");
+      reponse.textContent = "";
+      sources.replaceChildren();
+      bouton.disabled = true;
+      try {
+        const corps = {
+          question: document.getElementById("question").value,
+          mode: document.getElementById("mode").value,
+        };
+        const k = document.getElementById("k").value;
+        if (k) corps.k = Number(k);
+
+        const http = await fetch("/query", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-API-Token": document.getElementById("jeton").value,
+          },
+          body: JSON.stringify(corps),
+        });
+        if (!http.ok) {
+          const erreur = await http.json().catch(() => ({}));
+          throw new Error(http.status + " — " + (erreur.detail || http.statusText));
+        }
+        const donnees = await http.json();
+        reponse.textContent = donnees.answer;
+        etat.textContent = "Mode " + donnees.mode +
+          (donnees.context_used ? " — contexte injecté" :
+            " — AUCUN contexte injecté (réponse sans appui documentaire)") +
+          " · request_id " + donnees.request_id;
+        for (const source of donnees.sources) {
+          const element = document.createElement("li");
+          element.textContent = source.source_ref +
+            " (similarité " + source.similarity.toFixed(4) + ")";
+          sources.appendChild(element);
+        }
+        if (donnees.sources.length === 0) {
+          const element = document.createElement("li");
+          element.textContent = "(aucune)";
+          sources.appendChild(element);
+        }
+      } catch (erreur) {
+        etat.textContent = "Échec : " + erreur.message;
+        etat.classList.add("alerte");
+      } finally {
+        bouton.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

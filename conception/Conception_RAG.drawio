@@ -1,0 +1,740 @@
+<mxfile host="65bd71144e">
+    <diagram id="p1-archi-fonctionnelle" name="1 · Architecture fonctionnelle">
+        <mxGraphModel dx="1210" dy="779" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="826" math="0" shadow="0">
+            <root>
+                <mxCell id="p1_0"/>
+                <mxCell id="p1_1" parent="p1_0"/>
+                <mxCell id="p1_cont1" value="Chaîne d&#39;ingestion — ingest.py" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;verticalAlign=top;fontStyle=1;fontSize=14;align=left;spacingLeft=12;spacingTop=6;" parent="p1_1" vertex="1">
+                    <mxGeometry x="40" y="50" width="1110" height="190" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_f1" value="&lt;b&gt;F1 · Acquisition&lt;/b&gt;&lt;br&gt;colonne context · RO · dédup" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" parent="p1_1" vertex="1">
+                    <mxGeometry x="70" y="120" width="150" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_f2" value="&lt;b&gt;F2 · Pseudonymisation&lt;/b&gt;&lt;br&gt;PII → jetons (regex + NER) — S6" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" parent="p1_1" vertex="1">
+                    <mxGeometry x="250" y="120" width="150" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_f3" value="&lt;b&gt;F3 · Contrôle injection&lt;/b&gt;&lt;br&gt;heuristiques — S7" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" parent="p1_1" vertex="1">
+                    <mxGeometry x="430" y="120" width="150" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_f4" value="&lt;b&gt;F4 · Chunking&lt;/b&gt;&lt;br&gt;1000 c · recouvr. 150" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" parent="p1_1" vertex="1">
+                    <mxGeometry x="610" y="120" width="150" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_f5" value="&lt;b&gt;F5 · Embeddings&lt;/b&gt;&lt;br&gt;nomic-embed · 768d" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" parent="p1_1" vertex="1">
+                    <mxGeometry x="790" y="120" width="150" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_f6" value="&lt;b&gt;F6 · Stockage sécurisé&lt;/b&gt;&lt;br&gt;chiffré + HMAC — S5·S8" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" parent="p1_1" vertex="1">
+                    <mxGeometry x="970" y="120" width="150" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_e12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" parent="p1_1" source="p1_f1" target="p1_f2" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_e23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" parent="p1_1" source="p1_f2" target="p1_f3" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_e34" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" parent="p1_1" source="p1_f3" target="p1_f4" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_e45" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" parent="p1_1" source="p1_f4" target="p1_f5" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_e56" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" parent="p1_1" source="p1_f5" target="p1_f6" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_quar" value="&lt;b&gt;Quarantaine&lt;/b&gt;&lt;br&gt;rag.quarantine" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" parent="p1_1" vertex="1">
+                    <mxGeometry x="430" y="280" width="150" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_e3q" value="suspect" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;strokeColor=#b85450;fontColor=#b85450;fontSize=11;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" parent="p1_1" source="p1_f3" target="p1_quar" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_cont2" value="Chaîne d&#39;interrogation — query.py" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;verticalAlign=top;fontStyle=1;fontSize=14;align=left;spacingLeft=12;spacingTop=6;" parent="p1_1" vertex="1">
+                    <mxGeometry x="40" y="390" width="1110" height="190" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_f7" value="&lt;b&gt;F7 · Question&lt;/b&gt;&lt;br&gt;CLI · web (phase 2)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" parent="p1_1" vertex="1">
+                    <mxGeometry x="70" y="460" width="150" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_f8" value="&lt;b&gt;F8 · Recherche top-k&lt;/b&gt;&lt;br&gt;cosinus · k=4 · seuil 0,35" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" parent="p1_1" vertex="1">
+                    <mxGeometry x="290" y="460" width="150" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_f9" value="&lt;b&gt;F9 · Prompt durci&lt;/b&gt;&lt;br&gt;spotlighting — S7" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" parent="p1_1" vertex="1">
+                    <mxGeometry x="510" y="460" width="150" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_f10" value="&lt;b&gt;F10 · Génération&lt;/b&gt;&lt;br&gt;llama3.1:8b · T=0,1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" parent="p1_1" vertex="1">
+                    <mxGeometry x="730" y="460" width="150" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_f11" value="&lt;b&gt;F11 · Filtrage sortie&lt;/b&gt;&lt;br&gt;PII / jetons — S9" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" parent="p1_1" vertex="1">
+                    <mxGeometry x="950" y="460" width="150" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_e78" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" parent="p1_1" source="p1_f7" target="p1_f8" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_e89" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" parent="p1_1" source="p1_f8" target="p1_f9" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_e910" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" parent="p1_1" source="p1_f9" target="p1_f10" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_e1011" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" parent="p1_1" source="p1_f10" target="p1_f11" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_e68" value="contexte : top-k chunks" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;strokeColor=#6c8ebf;fontColor=#6c8ebf;fontSize=11;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" parent="p1_1" source="p1_f6" target="p1_f8" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="1045" y="365"/>
+                            <mxPoint x="365" y="365"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="p1_f12" value="&lt;b&gt;F12 · Journalisation &amp;amp; audit — S4&lt;/b&gt; : pgaudit (rag-db) + journal applicatif JSON (rag-app) + access log (phase 2) — transverse aux deux chaînes" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;" parent="p1_1" vertex="1">
+                    <mxGeometry x="40" y="630" width="860" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_f13" value="&lt;b&gt;F13 · Consultation d&#39;audit&lt;/b&gt;&lt;br&gt;tableau /admin (phase 2)" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;" parent="p1_1" vertex="1">
+                    <mxGeometry x="940" y="630" width="210" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_e1213" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=none;strokeColor=#9673a6;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" parent="p1_1" source="p1_f12" target="p1_f13" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_lg1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="p1_1" vertex="1">
+                    <mxGeometry x="70" y="730" width="30" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_lg1t" value="Fonction métier RAG" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" parent="p1_1" vertex="1">
+                    <mxGeometry x="110" y="725" width="200" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_lg2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="p1_1" vertex="1">
+                    <mxGeometry x="340" y="730" width="30" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_lg2t" value="Fonction de sécurité" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" parent="p1_1" vertex="1">
+                    <mxGeometry x="380" y="725" width="200" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_lg3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" parent="p1_1" vertex="1">
+                    <mxGeometry x="610" y="730" width="30" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_lg3t" value="Rejet / quarantaine" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" parent="p1_1" vertex="1">
+                    <mxGeometry x="650" y="725" width="200" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_lg4" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" parent="p1_1" vertex="1">
+                    <mxGeometry x="880" y="730" width="30" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_lg4t" value="Audit transverse" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" parent="p1_1" vertex="1">
+                    <mxGeometry x="920" y="725" width="200" height="30" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="p2-archi-technique" name="2 · Architecture technique">
+        <mxGraphModel dx="1210" dy="779" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="1000" math="0" shadow="0">
+            <root>
+                <mxCell id="p2_0"/>
+                <mxCell id="p2_1" parent="p2_0"/>
+                <mxCell id="p2_host" value="Hôte Windows 11 — Docker Desktop (WSL 2) · GPU NVIDIA · BitLocker" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;dashPattern=8 4;fillColor=none;strokeColor=#666666;verticalAlign=top;fontStyle=1;fontSize=14;align=center;spacingLeft=12;spacingTop=6;" parent="p2_1" vertex="1">
+                    <mxGeometry x="40" y="40" width="1000" height="780" as="geometry"/>
+                </mxCell>
+                <mxCell id="p2_term" value="&lt;b&gt;Terminal PowerShell&lt;/b&gt;&lt;br&gt;docker exec" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" parent="p2_1" vertex="1">
+                    <mxGeometry x="90" y="120" width="200" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="p2_secrets" value="&lt;b&gt;./secrets&lt;/b&gt;&lt;br&gt;clé pgcrypto · RO" style="shape=folder;fontStyle=0;spacingTop=10;tabWidth=60;tabHeight=14;tabPosition=left;html=1;whiteSpace=wrap;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" parent="p2_1" vertex="1">
+                    <mxGeometry x="430" y="120" width="200" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="p2_data" value="&lt;b&gt;./data — dataset HF&lt;/b&gt;&lt;br&gt;lecture seule" style="shape=folder;fontStyle=0;spacingTop=10;tabWidth=60;tabHeight=14;tabPosition=left;html=1;whiteSpace=wrap;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" parent="p2_1" vertex="1">
+                    <mxGeometry x="760" y="120" width="230" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="p2_net" value="Réseau rag-net — internal: true · aucun port publié — S1" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;dashPattern=8 4;fillColor=none;strokeColor=#6c8ebf;verticalAlign=top;fontStyle=1;fontSize=13;align=left;spacingLeft=12;spacingTop=6;fontColor=#6c8ebf;" parent="p2_1" vertex="1">
+                    <mxGeometry x="90" y="330" width="900" height="290" as="geometry"/>
+                </mxCell>
+                <mxCell id="p2_app" value="&lt;b&gt;rag-app&lt;/b&gt;&lt;br&gt;Python 3.12 + LangChain&lt;br&gt;ingest.py · query.py — code RO" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" parent="p2_1" vertex="1">
+                    <mxGeometry x="420" y="370" width="250" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="p2_bapp" value="S6 · S7 · S8 · S9" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;fontStyle=1;" parent="p2_1" vertex="1">
+                    <mxGeometry x="510" y="362" width="145" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="p2_oll" value="&lt;b&gt;rag-ollama&lt;/b&gt; (GPU)&lt;br&gt;llama3.1:8b — génération&lt;br&gt;nomic-embed-text — 768d" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" parent="p2_1" vertex="1">
+                    <mxGeometry x="130" y="500" width="250" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="p2_db" value="&lt;b&gt;rag-db&lt;/b&gt;&lt;br&gt;PostgreSQL 17 + pgvector&lt;br&gt;+ pgaudit" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" parent="p2_1" vertex="1">
+                    <mxGeometry x="700" y="500" width="250" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="p2_bdb" value="S2 · S3 · S4 · S5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;fontStyle=1;" parent="p2_1" vertex="1">
+                    <mxGeometry x="710" y="570" width="145" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="p2_volm" value="volume ollama_models" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" parent="p2_1" vertex="1">
+                    <mxGeometry x="130" y="680" width="220" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="p2_logs" value="&lt;b&gt;./logs&lt;/b&gt;&lt;br&gt;journaux JSON" style="shape=folder;fontStyle=0;spacingTop=10;tabWidth=60;tabHeight=14;tabPosition=left;html=1;whiteSpace=wrap;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;" parent="p2_1" vertex="1">
+                    <mxGeometry x="410" y="685" width="210" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="p2_volp" value="volume pg_data" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" parent="p2_1" vertex="1">
+                    <mxGeometry x="700" y="680" width="220" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="p2_cloud" value="&lt;b&gt;Internet&lt;/b&gt;&lt;br&gt;P1 uniquement" style="ellipse;shape=cloud;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" parent="p2_1" vertex="1">
+                    <mxGeometry x="1050" y="430" width="110" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="p2_eterm" value="console (docker exec)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;labelBackgroundColor=#ffffff;dashed=1;strokeColor=#999999;exitX=1;exitY=0.5;entryX=0;entryY=0.6;" parent="p2_1" source="p2_term" target="p2_app" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p2_esec" value="montage RO" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;labelBackgroundColor=#ffffff;dashed=1;strokeColor=#999999;exitX=0.5;exitY=1;entryX=0;entryY=0.3;" parent="p2_1" source="p2_secrets" target="p2_app" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="530" y="205"/>
+                            <mxPoint x="395" y="205"/>
+                            <mxPoint x="395" y="394"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="p2_edata" value="montage RO" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;labelBackgroundColor=#ffffff;dashed=1;strokeColor=#999999;exitX=0.5;exitY=1;entryX=1;entryY=0.3;" parent="p2_1" source="p2_data" target="p2_app" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="875" y="205"/>
+                            <mxPoint x="683" y="205"/>
+                            <mxPoint x="683" y="394"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="p2_eoll" value="HTTP 11434&lt;br&gt;embeddings + génération" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=0.2;exitY=1;entryX=0.5;entryY=0;" parent="p2_1" source="p2_app" target="p2_oll" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p2_edb" value="TCP 5432&lt;br&gt;scram-sha-256" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=0.8;exitY=1;entryX=0.5;entryY=0;" parent="p2_1" source="p2_app" target="p2_db" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p2_evolm" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=none;strokeColor=#999999;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" parent="p2_1" source="p2_oll" target="p2_volm" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p2_evolp" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=none;strokeColor=#999999;exitX=0.7;exitY=1;entryX=0.5;entryY=0;" parent="p2_1" source="p2_db" target="p2_volp" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p2_elogs" value="S4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;strokeColor=#9673a6;fontColor=#9673a6;fontSize=11;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" parent="p2_1" source="p2_app" target="p2_logs" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p2_ecloud" value="&lt;b&gt;✗ egress bloqué (P2)&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#b85450;fontColor=#b85450;strokeWidth=2;fontSize=11;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;endArrow=cross;endSize=10;" parent="p2_1" source="p2_net" target="p2_cloud" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p2_note" value="Cycle de vie — P1 provisioning (Internet, une seule fois : build des images, pull llama3.1:8b + nomic-embed-text, téléchargement du dataset, génération de la clé) → P2 exploitation (rag-net internal : ingestion, requêtes, démos) → P3 vérification (verify_isolation : egress KO, 0 port publié, docker network inspect). Légende : flèche pleine = flux réseau · pointillés gris = montage/console (hors réseau) · pointillés violets = phase 2. Les pointillés aboutissent au conteneur rag-app, jamais au réseau rag-net : docker exec = processus injecté par le démon ; rag-edge = 2ᵉ carte réseau de rag-app, sans routage entre les deux réseaux." style="text;html=1;align=left;verticalAlign=middle;fontSize=11;fontColor=#666666;spacingLeft=4;" parent="p2_1" vertex="1">
+                    <mxGeometry x="60" y="845" width="980" height="66" as="geometry"/>
+                </mxCell>
+                <mxCell id="p2_phase2" value="&lt;b&gt;Phase 2 (option, D12/D13)&lt;/b&gt; — API FastAPI portée par rag-app (double rattachement, cf. bande rag-edge ci-dessus) · route /admin en lecture seule (jeton distinct · rôle rag_auditor · anti-XSS) · rag-db et rag-ollama restent exclusivement sur le réseau interne. Détails : NOTES_conception §D12-D13." style="rounded=1;whiteSpace=wrap;html=1;dashed=1;dashPattern=8 4;fillColor=none;strokeColor=#9673a6;fontColor=#9673a6;fontSize=11;align=left;spacingLeft=10;spacing=6;" parent="p2_1" vertex="1">
+                    <mxGeometry x="60" y="915" width="980" height="62" as="geometry"/>
+                </mxCell>
+                <mxCell id="p2_edge" value="&lt;b&gt;rag-edge (phase 2) — DMZ&lt;/b&gt;&lt;br&gt;navigateur → 127.0.0.1:8000 · jeton" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;dashPattern=8 4;fillColor=none;strokeColor=#9673a6;fontColor=#9673a6;fontSize=11;align=center;verticalAlign=middle;" parent="p2_1" vertex="1">
+                    <mxGeometry x="420" y="230" width="250" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="p2_eapi" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;strokeColor=#9673a6;exitX=0.15;exitY=1;entryX=0.15;entryY=0;" parent="p2_1" source="p2_edge" target="p2_app" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="p3-flux-ingestion" name="3 · Flux d&#39;ingestion">
+        <mxGraphModel dx="1210" dy="779" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+            <root>
+                <mxCell id="p3_0"/>
+                <mxCell id="p3_1" parent="p3_0"/>
+                <mxCell id="p3_s" value="&lt;b&gt;Lancement ingest.py&lt;/b&gt;&lt;br&gt;docker exec · paramètres : n docs · graine" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" parent="p3_1" vertex="1">
+                    <mxGeometry x="250" y="40" width="340" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_a" value="&lt;b&gt;F1&lt;/b&gt; · Lecture /data (RO) — colonne context&lt;br&gt;dédup par SHA-256 du contexte normalisé" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" parent="p3_1" vertex="1">
+                    <mxGeometry x="250" y="130" width="340" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_b" value="&lt;b&gt;F2 · S6&lt;/b&gt; — Pseudonymisation : PII → jetons + pii_stats" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" parent="p3_1" vertex="1">
+                    <mxGeometry x="250" y="210" width="340" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_c" value="&lt;b&gt;F3 · S7&lt;/b&gt; — Analyse anti-injection → score" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" parent="p3_1" vertex="1">
+                    <mxGeometry x="250" y="290" width="340" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_d" value="Document&lt;br&gt;suspect ?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" parent="p3_1" vertex="1">
+                    <mxGeometry x="310" y="370" width="220" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_q" value="&lt;b&gt;Quarantaine&lt;/b&gt;&lt;br&gt;INSERT rag.quarantine&lt;br&gt;motif · score · contenu chiffré" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" parent="p3_1" vertex="1">
+                    <mxGeometry x="600" y="380" width="210" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_e" value="&lt;b&gt;F4&lt;/b&gt; · Chunking récursif — 1 000 c · recouvrement 150 (D10)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" parent="p3_1" vertex="1">
+                    <mxGeometry x="250" y="490" width="340" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_f" value="&lt;b&gt;F5&lt;/b&gt; · Embeddings — POST rag-ollama:11434&lt;br&gt;nomic-embed-text · 768d · préfixe search_document" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" parent="p3_1" vertex="1">
+                    <mxGeometry x="250" y="570" width="340" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_g" value="&lt;b&gt;F6 · S8&lt;/b&gt; — HMAC-SHA256 par chunk : texte + vecteur (clé dédiée)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" parent="p3_1" vertex="1">
+                    <mxGeometry x="250" y="660" width="340" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_h" value="&lt;b&gt;F6&lt;/b&gt; · INSERT documents + chunks — transaction par document&lt;br&gt;texte chiffré pgcrypto &lt;b&gt;S5&lt;/b&gt; · rag_ingest &lt;b&gt;S2·S3&lt;/b&gt; · pgaudit &lt;b&gt;S4&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" parent="p3_1" vertex="1">
+                    <mxGeometry x="250" y="740" width="340" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_i" value="&lt;b&gt;F12&lt;/b&gt; · Journal applicatif JSON — &lt;b&gt;S4&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;" parent="p3_1" vertex="1">
+                    <mxGeometry x="250" y="830" width="340" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_z" value="&lt;b&gt;Bilan&lt;/b&gt; : ingérés · écartés · durée" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" parent="p3_1" vertex="1">
+                    <mxGeometry x="250" y="910" width="340" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" parent="p3_1" source="p3_s" target="p3_a" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" parent="p3_1" source="p3_a" target="p3_b" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_e3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" parent="p3_1" source="p3_b" target="p3_c" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_e4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" parent="p3_1" source="p3_c" target="p3_d" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_eq" value="oui" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#b85450;fontColor=#b85450;fontSize=11;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" parent="p3_1" source="p3_d" target="p3_q" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_e5" value="non" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" parent="p3_1" source="p3_d" target="p3_e" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_eqj" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;strokeColor=#b85450;exitX=0.5;exitY=1;entryX=1;entryY=0.5;" parent="p3_1" source="p3_q" target="p3_i" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="705" y="855"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="p3_e6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" parent="p3_1" source="p3_e" target="p3_f" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_e7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" parent="p3_1" source="p3_f" target="p3_g" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_e8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" parent="p3_1" source="p3_g" target="p3_h" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_e9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" parent="p3_1" source="p3_h" target="p3_i" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_e10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" parent="p3_1" source="p3_i" target="p3_z" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="p4-flux-interrogation" name="4 · Flux d&#39;interrogation">
+        <mxGraphModel dx="2060" dy="779" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+            <root>
+                <mxCell id="p4_0"/>
+                <mxCell id="p4_1" parent="p4_0"/>
+                <mxCell id="p4_s" value="&lt;b&gt;F7 · query.py — question&lt;/b&gt;&lt;br&gt;docker exec / API web (phase 2) · --rag / --no-rag" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" parent="p4_1" vertex="1">
+                    <mxGeometry x="230" y="40" width="340" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="p4_d" value="mode&lt;br&gt;--rag ?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" parent="p4_1" vertex="1">
+                    <mxGeometry x="290" y="130" width="220" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="p4_a" value="&lt;b&gt;F8&lt;/b&gt; · Embedding de la question — nomic-embed · 768d · préfixe search_query" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" parent="p4_1" vertex="1">
+                    <mxGeometry x="230" y="250" width="340" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="p4_b" value="&lt;b&gt;F8&lt;/b&gt; · SELECT top-k=4 (cosinus) · seuil 0,35 · jointure documents (doc_sha256 · source_ref)&lt;br&gt;rag_reader &lt;b&gt;S2·S3&lt;/b&gt; · pgaudit &lt;b&gt;S4&lt;/b&gt; · déchiffrement pgcrypto &lt;b&gt;S5&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" parent="p4_1" vertex="1">
+                    <mxGeometry x="230" y="330" width="340" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="p4_c" value="&lt;b&gt;F8 · S8&lt;/b&gt; — Vérification HMAC (texte + vecteur) — chunk altéré → exclu + alerte" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" parent="p4_1" vertex="1">
+                    <mxGeometry x="230" y="430" width="340" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="p4_e" value="&lt;b&gt;F9 · S7&lt;/b&gt; — Prompt durci : délimiteurs + spotlighting" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" parent="p4_1" vertex="1">
+                    <mxGeometry x="230" y="510" width="340" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="p4_f" value="&lt;b&gt;F10&lt;/b&gt; · Génération — llama3.1:8b · T=0,1 · num_ctx 8192 · graine" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" parent="p4_1" vertex="1">
+                    <mxGeometry x="230" y="590" width="340" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="p4_g" value="&lt;b&gt;F11 · S9&lt;/b&gt; — Filtrage : PII masquées · URLs hors sources neutralisées · jetons comptés" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" parent="p4_1" vertex="1">
+                    <mxGeometry x="230" y="670" width="340" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="p4_h" value="Réponse + sources (source_ref · similarité) · journal JSON — &lt;b&gt;F12 · S4&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;" parent="p4_1" vertex="1">
+                    <mxGeometry x="230" y="750" width="340" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="p4_z" value="&lt;b&gt;Affichage à l&#39;opérateur&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" parent="p4_1" vertex="1">
+                    <mxGeometry x="230" y="830" width="340" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="p4_note" value="Le mode --no-rag alimente le tableau comparatif EF8 : même question, avec puis sans contexte RAG. Sous le seuil 0,35 : aucun contexte injecté, réponse signalée « sans contexte »." style="text;html=1;align=center;verticalAlign=middle;fontSize=11;fontColor=#666666;" parent="p4_1" vertex="1">
+                    <mxGeometry x="145" y="920" width="510" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="p4_e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" parent="p4_1" source="p4_s" target="p4_d" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p4_e2" value="oui" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" parent="p4_1" source="p4_d" target="p4_a" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p4_ebp" value="--no-rag : aucun contexte injecté" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;strokeColor=#666666;fontSize=11;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=1;entryY=0.5;" parent="p4_1" source="p4_d" target="p4_f" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="690" y="170"/>
+                            <mxPoint x="690" y="615"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="p4_e3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" parent="p4_1" source="p4_a" target="p4_b" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p4_e4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" parent="p4_1" source="p4_b" target="p4_c" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p4_e5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" parent="p4_1" source="p4_c" target="p4_e" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p4_e6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" parent="p4_1" source="p4_e" target="p4_f" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p4_e7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" parent="p4_1" source="p4_f" target="p4_g" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p4_e8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" parent="p4_1" source="p4_g" target="p4_h" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p4_e9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" parent="p4_1" source="p4_h" target="p4_z" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="p5-modele-donnees" name="5 · Modèle de données">
+        <mxGraphModel dx="1210" dy="779" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="826" math="0" shadow="0">
+            <root>
+                <mxCell id="p5_0"/>
+                <mxCell id="p5_1" parent="p5_0"/>
+                <mxCell id="p5_doc" value="rag.documents" style="swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=28;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;fillColor=#dae8fc;strokeColor=#6c8ebf;swimlaneFillColor=#ffffff;html=1;fontSize=12;" parent="p5_1" vertex="1">
+                    <mxGeometry x="80" y="80" width="310" height="172" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_doc1" value="id : bigint — PK" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;portConstraint=eastwest;html=1;fontSize=11;fontStyle=1;" parent="p5_doc" vertex="1">
+                    <mxGeometry y="28" width="310" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_doc2" value="source_ref : text — réf. dataset" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;portConstraint=eastwest;html=1;fontSize=11;" parent="p5_doc" vertex="1">
+                    <mxGeometry y="52" width="310" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_doc3" value="doc_sha256 : char(64) — UNIQUE" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;portConstraint=eastwest;html=1;fontSize=11;" parent="p5_doc" vertex="1">
+                    <mxGeometry y="76" width="310" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_doc4" value="ingested_at : timestamptz" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;portConstraint=eastwest;html=1;fontSize=11;" parent="p5_doc" vertex="1">
+                    <mxGeometry y="100" width="310" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_doc5" value="ingested_by : text" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;portConstraint=eastwest;html=1;fontSize=11;" parent="p5_doc" vertex="1">
+                    <mxGeometry y="124" width="310" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_doc6" value="pii_stats : jsonb — compteurs S6" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;portConstraint=eastwest;html=1;fontSize=11;" parent="p5_doc" vertex="1">
+                    <mxGeometry y="148" width="310" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_chk" value="rag.chunks" style="swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=28;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;fillColor=#dae8fc;strokeColor=#6c8ebf;swimlaneFillColor=#ffffff;html=1;fontSize=12;" parent="p5_1" vertex="1">
+                    <mxGeometry x="640" y="60" width="360" height="220" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_chk1" value="id : bigint — PK" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;portConstraint=eastwest;html=1;fontSize=11;fontStyle=1;" parent="p5_chk" vertex="1">
+                    <mxGeometry y="28" width="360" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_chk2" value="document_id : bigint — FK → rag.documents" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;portConstraint=eastwest;html=1;fontSize=11;" parent="p5_chk" vertex="1">
+                    <mxGeometry y="52" width="360" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_chk3" value="chunk_index : int — UNIQUE (document_id, chunk_index)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;portConstraint=eastwest;html=1;fontSize=11;" parent="p5_chk" vertex="1">
+                    <mxGeometry y="76" width="360" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_chk4" value="content_enc : bytea — chiffré pgcrypto (S5)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;portConstraint=eastwest;html=1;fontSize=11;fontColor=#b85450;" parent="p5_chk" vertex="1">
+                    <mxGeometry y="100" width="360" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_chk5" value="embedding : vector(768) — en clair, indexé" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;portConstraint=eastwest;html=1;fontSize=11;" parent="p5_chk" vertex="1">
+                    <mxGeometry y="124" width="360" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_chk6" value="chunk_hmac : char(64) — HMAC(texte + vecteur, S8·D11)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;portConstraint=eastwest;html=1;fontSize=11;fontColor=#b85450;" parent="p5_chk" vertex="1">
+                    <mxGeometry y="148" width="360" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_chk8" value="embedding_model : text — ex. nomic-embed-text@v1.5 (D14)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;portConstraint=eastwest;html=1;fontSize=11;fontColor=#6c8ebf;" parent="p5_chk" vertex="1">
+                    <mxGeometry y="172" width="360" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_chk7" value="created_at : timestamptz" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;portConstraint=eastwest;html=1;fontSize=11;" parent="p5_chk" vertex="1">
+                    <mxGeometry y="196" width="360" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_qua" value="rag.quarantine" style="swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=28;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;fillColor=#f8cecc;strokeColor=#b85450;swimlaneFillColor=#ffffff;html=1;fontSize=12;" parent="p5_1" vertex="1">
+                    <mxGeometry x="80" y="390" width="310" height="172" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_qua1" value="id : bigint — PK" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;portConstraint=eastwest;html=1;fontSize=11;fontStyle=1;" parent="p5_qua" vertex="1">
+                    <mxGeometry y="28" width="310" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_qua2" value="source_ref : text" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;portConstraint=eastwest;html=1;fontSize=11;" parent="p5_qua" vertex="1">
+                    <mxGeometry y="52" width="310" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_qua3" value="reason : text — pattern détecté (S7)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;portConstraint=eastwest;html=1;fontSize=11;" parent="p5_qua" vertex="1">
+                    <mxGeometry y="76" width="310" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_qua4" value="score : real" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;portConstraint=eastwest;html=1;fontSize=11;" parent="p5_qua" vertex="1">
+                    <mxGeometry y="100" width="310" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_qua5" value="content_enc : bytea — chiffré" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;portConstraint=eastwest;html=1;fontSize=11;" parent="p5_qua" vertex="1">
+                    <mxGeometry y="124" width="310" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_qua6" value="detected_at : timestamptz" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;portConstraint=eastwest;html=1;fontSize=11;" parent="p5_qua" vertex="1">
+                    <mxGeometry y="148" width="310" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_log" value="rag.ingest_log" style="swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=28;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;fillColor=#e1d5e7;strokeColor=#9673a6;swimlaneFillColor=#ffffff;html=1;fontSize=12;" parent="p5_1" vertex="1">
+                    <mxGeometry x="640" y="400" width="360" height="148" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_log1" value="id : bigint — PK" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;portConstraint=eastwest;html=1;fontSize=11;fontStyle=1;" parent="p5_log" vertex="1">
+                    <mxGeometry y="28" width="360" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_log2" value="ts : timestamptz" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;portConstraint=eastwest;html=1;fontSize=11;" parent="p5_log" vertex="1">
+                    <mxGeometry y="52" width="360" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_log3" value="operation : text — ingest / quarantine / verify" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;portConstraint=eastwest;html=1;fontSize=11;" parent="p5_log" vertex="1">
+                    <mxGeometry y="76" width="360" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_log4" value="detail : text" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;portConstraint=eastwest;html=1;fontSize=11;" parent="p5_log" vertex="1">
+                    <mxGeometry y="100" width="360" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_log5" value="ref_sha256 : char(64)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;portConstraint=eastwest;html=1;fontSize=11;" parent="p5_log" vertex="1">
+                    <mxGeometry y="124" width="360" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_rel" value="1 — n" style="edgeStyle=entityRelationEdgeStyle;fontSize=11;html=1;startArrow=ERone;startFill=0;endArrow=ERmany;endFill=0;rounded=0;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=#ffffff;" parent="p5_1" source="p5_doc" target="p5_chk" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_n1" value="Index HNSW sur chunks.embedding&#xa;vector_cosine_ops · m=16 · ef_construction=64 · top-k=4 · seuil 0,35&#xa;D14 — embedding_model épingle l&#39;espace vectoriel : F8 refuse un stock mêlant plusieurs modèles (vecteurs incomparables, écho F5)." style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#FFF9B2;strokeColor=none;fontSize=11;align=left;spacing=8;" parent="p5_1" vertex="1">
+                    <mxGeometry x="640" y="300" width="360" height="86" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_n2" value="Clés distinctes (chiffrement pgcrypto + intégrité HMAC) : générées en P1, montées RO dans rag-app — jamais en base ni dans les journaux" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#FFF9B2;strokeColor=none;fontSize=11;align=left;spacing=8;" parent="p5_1" vertex="1">
+                    <mxGeometry x="80" y="290" width="310" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_n3" value="Droits (GRANT) : rag_admin = ALL + DDL (humain) · rag_ingest = INSERT+SELECT sur documents/chunks/ingest_log, INSERT seul sur quarantine (ingest.py) · rag_reader = SELECT seul, jamais sur quarantine (query.py) · rag_auditor (phase 2) = SELECT ingest_log + colonnes métadonnées de quarantine et de documents (pii_stats), jamais content_enc (/admin, D13) — REVOKE ALL sur PUBLIC. Détail : NOTES_conception.md §5" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#FFF9B2;strokeColor=none;fontSize=11;align=left;spacing=8;" parent="p5_1" vertex="1">
+                    <mxGeometry x="80" y="610" width="920" height="74" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="p6-securite" name="6 · Sécurité — menaces et défenses">
+        <mxGraphModel dx="2379" dy="779" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="900" math="0" shadow="0">
+            <root>
+                <mxCell id="p6_0"/>
+                <mxCell id="p6_1" parent="p6_0"/>
+                <mxCell id="p6_note" value="Défense en profondeur — cycle prévention / détection / réaction. Prévention : 3 couches concentriques (chaque menace rouge est arrêtée par la couche/mesure indiquée). Détection &amp; réaction : bande transverse en bas. T8 atténuée (S5) mais non annulée → risque résiduel accepté (NOTES §6). Pointillés violets = phase 2." style="text;html=1;align=center;verticalAlign=middle;fontSize=12;fontColor=#666666;" parent="p6_1" vertex="1">
+                    <mxGeometry x="230" y="40" width="700" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="p6_l1" value="&lt;b&gt;Couche 1 — S1 Isolation&lt;/b&gt; · réseau internal · 0 port publié (phase 2 : un seul, 127.0.0.1 + jeton)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;verticalAlign=top;fontSize=12;spacingTop=6;" parent="p6_1" vertex="1">
+                    <mxGeometry x="230" y="100" width="700" height="560" as="geometry"/>
+                </mxCell>
+                <mxCell id="p6_l2" value="&lt;b&gt;Couche 2 — Base sécurisée&lt;/b&gt; · S2 scram-sha-256 · S3 rôles moindre privilège · S4 pgaudit · S5 pgcrypto" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;verticalAlign=top;fontSize=12;spacingTop=6;" parent="p6_1" vertex="1">
+                    <mxGeometry x="310" y="170" width="540" height="420" as="geometry"/>
+                </mxCell>
+                <mxCell id="p6_l3" value="&lt;b&gt;Couche 3 — Données &amp;amp; LLM&lt;/b&gt; · S6 pseudonymisation · S7 anti-injection · S8 intégrité · S9 filtrage" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;verticalAlign=top;fontSize=12;spacingTop=6;" parent="p6_1" vertex="1">
+                    <mxGeometry x="390" y="240" width="380" height="280" as="geometry"/>
+                </mxCell>
+                <mxCell id="p6_core" value="&lt;b&gt;Biens à protéger&lt;/b&gt;&lt;br&gt;corpus · vecteurs · réponses · clés&lt;br&gt;(confidentialité · intégrité · disponibilité)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" parent="p6_1" vertex="1">
+                    <mxGeometry x="460" y="330" width="240" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="p6_t1" value="&lt;b&gt;T1 · Exfiltration&lt;/b&gt;&lt;br&gt;egress, télémétrie" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" parent="p6_1" vertex="1">
+                    <mxGeometry x="30" y="140" width="180" height="64" as="geometry"/>
+                </mxCell>
+                <mxCell id="p6_t2" value="&lt;b&gt;T2 · Accès non autorisé&lt;/b&gt;&lt;br&gt;credentials, connexion directe" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" parent="p6_1" vertex="1">
+                    <mxGeometry x="30" y="328" width="180" height="64" as="geometry"/>
+                </mxCell>
+                <mxCell id="p6_t6" value="&lt;b&gt;T6 · Vol au repos&lt;/b&gt;&lt;br&gt;copie volume / disque" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" parent="p6_1" vertex="1">
+                    <mxGeometry x="30" y="516" width="180" height="64" as="geometry"/>
+                </mxCell>
+                <mxCell id="p6_t3" value="&lt;b&gt;T3 · RAG poisoning&lt;/b&gt;&lt;br&gt;documents malveillants · échange de lignes" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" parent="p6_1" vertex="1">
+                    <mxGeometry x="950" y="140" width="180" height="64" as="geometry"/>
+                </mxCell>
+                <mxCell id="p6_t4" value="&lt;b&gt;T4 · Injection indirecte&lt;/b&gt;&lt;br&gt;instructions dans les documents" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" parent="p6_1" vertex="1">
+                    <mxGeometry x="950" y="328" width="180" height="64" as="geometry"/>
+                </mxCell>
+                <mxCell id="p6_t5" value="&lt;b&gt;T5 · Fuite de PII&lt;/b&gt;&lt;br&gt;dans les réponses" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" parent="p6_1" vertex="1">
+                    <mxGeometry x="950" y="516" width="180" height="64" as="geometry"/>
+                </mxCell>
+                <mxCell id="p6_t7" value="&lt;b&gt;T7 · Élévation de privilège&lt;/b&gt;&lt;br&gt;query.py tente d&#39;écrire" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" parent="p6_1" vertex="1">
+                    <mxGeometry x="290" y="720" width="180" height="64" as="geometry"/>
+                </mxCell>
+                <mxCell id="p6_t8" value="&lt;b&gt;T8 · Inversion d&#39;embeddings&lt;/b&gt;&lt;br&gt;vecteurs en clair (pgvector)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" parent="p6_1" vertex="1">
+                    <mxGeometry x="650" y="720" width="200" height="64" as="geometry"/>
+                </mxCell>
+                <mxCell id="p6_et1" value="S1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#b85450;fontColor=#b85450;fontSize=11;fontStyle=1;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.13;" parent="p6_1" source="p6_t1" target="p6_l1" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p6_et2" value="S2 · S3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#b85450;fontColor=#b85450;fontSize=11;fontStyle=1;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.45;" parent="p6_1" source="p6_t2" target="p6_l2" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p6_et6" value="S5 · BitLocker" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#b85450;fontColor=#b85450;fontSize=11;fontStyle=1;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.9;" parent="p6_1" source="p6_t6" target="p6_l2" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p6_et3" value="S7 · S8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#b85450;fontColor=#b85450;fontSize=11;fontStyle=1;labelBackgroundColor=#ffffff;exitX=0;exitY=0.5;entryX=1;entryY=0.11;" parent="p6_1" source="p6_t3" target="p6_l3" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="890" y="172"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="p6_et4" value="S7 · S9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#b85450;fontColor=#b85450;fontSize=11;fontStyle=1;labelBackgroundColor=#ffffff;exitX=0;exitY=0.5;entryX=1;entryY=0.43;" parent="p6_1" source="p6_t4" target="p6_l3" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p6_et5" value="S6 · S9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#b85450;fontColor=#b85450;fontSize=11;fontStyle=1;labelBackgroundColor=#ffffff;exitX=0;exitY=0.5;entryX=1;entryY=0.93;" parent="p6_1" source="p6_t5" target="p6_l3" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="890" y="548"/>
+                            <mxPoint x="890" y="500"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="p6_et7" value="S3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#b85450;fontColor=#b85450;fontSize=11;fontStyle=1;labelBackgroundColor=#ffffff;exitX=0.5;exitY=0;entryX=0.13;entryY=1;" parent="p6_1" source="p6_t7" target="p6_l2" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p6_t9" value="&lt;b&gt;T9 · Exposition API web&lt;/b&gt;&lt;br&gt;endpoint + /admin (phase 2)" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;fillColor=#f8cecc;strokeColor=#9673a6;fontSize=11;" parent="p6_1" vertex="1">
+                    <mxGeometry x="40" y="712" width="200" height="64" as="geometry"/>
+                </mxCell>
+                <mxCell id="p6_et9" value="127.0.0.1 · jeton · rag_auditor · anti-XSS" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;strokeColor=#9673a6;fontColor=#9673a6;fontSize=11;labelBackgroundColor=#ffffff;exitX=0.5;exitY=0;entryX=0.05;entryY=1;" parent="p6_1" source="p6_t9" target="p6_l1" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p6_et8" value="risque résiduel — accepté" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;strokeColor=#b85450;fontColor=#b85450;fontSize=11;labelBackgroundColor=#ffffff;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" parent="p6_1" source="p6_t8" target="p6_core" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="750" y="690"/>
+                            <mxPoint x="580" y="690"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="p6_detect" value="&lt;b&gt;Détection &amp;amp; réaction — transverse à toutes les couches (F12)&lt;/b&gt;&#xa;S4 : pgaudit + journal JSON hors conteneur (traces base / app / access log recoupées)  ·  S8 : vérification HMAC à la lecture → chunk exclu + alerte  ·  S7 : documents suspects → quarantaine" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;dashPattern=8 4;fillColor=none;strokeColor=#9673a6;fontColor=#9673a6;fontSize=11;align=center;spacingTop=4;verticalAlign=middle;" parent="p6_1" vertex="1">
+                    <mxGeometry x="30" y="806" width="1100" height="56" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="p7-arborescence" name="7 · Arborescence du projet">
+        <mxGraphModel dx="1210" dy="779" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="826" math="0" shadow="0">
+            <root>
+                <mxCell id="p7_0"/>
+                <mxCell id="p7_1" parent="p7_0"/>
+                <mxCell id="p7_root" value="&lt;b&gt;Projet/RAG/&lt;/b&gt;" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=60;tabHeight=14;tabPosition=left;html=1;whiteSpace=wrap;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=13;" parent="p7_1" vertex="1">
+                    <mxGeometry x="40" y="40" width="210" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="p7_conc" value="conception/" style="shape=folder;spacingTop=10;tabWidth=50;tabHeight=12;tabPosition=left;html=1;whiteSpace=wrap;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" parent="p7_1" vertex="1">
+                    <mxGeometry x="110" y="100" width="190" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="p7_secu" value="rag-secure/" style="shape=folder;spacingTop=10;tabWidth=50;tabHeight=12;tabPosition=left;html=1;whiteSpace=wrap;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;fontStyle=1;" parent="p7_1" vertex="1">
+                    <mxGeometry x="110" y="152" width="190" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="p7_ddb" value="docker/db/" style="shape=folder;spacingTop=10;tabWidth=50;tabHeight=12;tabPosition=left;html=1;whiteSpace=wrap;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" parent="p7_1" vertex="1">
+                    <mxGeometry x="180" y="204" width="190" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="p7_dapp" value="docker/app/" style="shape=folder;spacingTop=10;tabWidth=50;tabHeight=12;tabPosition=left;html=1;whiteSpace=wrap;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" parent="p7_1" vertex="1">
+                    <mxGeometry x="180" y="256" width="190" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="p7_app" value="app/" style="shape=folder;spacingTop=10;tabWidth=50;tabHeight=12;tabPosition=left;html=1;whiteSpace=wrap;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" parent="p7_1" vertex="1">
+                    <mxGeometry x="180" y="308" width="190" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="p7_sec" value="app/security/" style="shape=folder;spacingTop=10;tabWidth=50;tabHeight=12;tabPosition=left;html=1;whiteSpace=wrap;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" parent="p7_1" vertex="1">
+                    <mxGeometry x="250" y="360" width="190" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="p7_scr" value="scripts/" style="shape=folder;spacingTop=10;tabWidth=50;tabHeight=12;tabPosition=left;html=1;whiteSpace=wrap;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" parent="p7_1" vertex="1">
+                    <mxGeometry x="180" y="412" width="190" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="p7_data" value="data/" style="shape=folder;spacingTop=10;tabWidth=50;tabHeight=12;tabPosition=left;html=1;whiteSpace=wrap;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" parent="p7_1" vertex="1">
+                    <mxGeometry x="180" y="464" width="190" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="p7_secr" value="secrets/" style="shape=folder;spacingTop=10;tabWidth=50;tabHeight=12;tabPosition=left;html=1;whiteSpace=wrap;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" parent="p7_1" vertex="1">
+                    <mxGeometry x="180" y="516" width="190" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="p7_logs" value="logs/" style="shape=folder;spacingTop=10;tabWidth=50;tabHeight=12;tabPosition=left;html=1;whiteSpace=wrap;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" parent="p7_1" vertex="1">
+                    <mxGeometry x="180" y="568" width="190" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="p7_res" value="resultats/" style="shape=folder;spacingTop=10;tabWidth=50;tabHeight=12;tabPosition=left;html=1;whiteSpace=wrap;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" parent="p7_1" vertex="1">
+                    <mxGeometry x="110" y="620" width="190" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="p7_rap" value="rapport/" style="shape=folder;spacingTop=10;tabWidth=50;tabHeight=12;tabPosition=left;html=1;whiteSpace=wrap;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" parent="p7_1" vertex="1">
+                    <mxGeometry x="110" y="672" width="190" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="p7_rconc" value="Conception_RAG.drawio (7 pages) · NOTES_conception.md — conception figée après validation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;align=left;spacingLeft=10;" parent="p7_1" vertex="1">
+                    <mxGeometry x="560" y="100" width="560" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="p7_rsecu" value="compose.yaml (P2 : rag-net internal) · compose.bootstrap.yaml (P1) · .env.example (config NON sensible : noms de modèles, k, seuils) · .gitignore" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;align=left;spacingLeft=10;" parent="p7_1" vertex="1">
+                    <mxGeometry x="560" y="152" width="560" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="p7_rddb" value="Dockerfile (pgvector:pg17 + pgaudit) · postgresql.conf · pg_hba.conf · initdb/ : 01_roles.sh · 02_schema.sql · 03_grants.sql · 04_audit.sql (ordre : rôles → tables → GRANT → audit)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;align=left;spacingLeft=10;" parent="p7_1" vertex="1">
+                    <mxGeometry x="560" y="204" width="560" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="p7_rdapp" value="Dockerfile (python:3.12-slim · non-root · modèle spaCy en_core_web_sm au build, D9) · requirements.txt (langchain, psycopg, spacy, fastapi en phase 2)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;align=left;spacingLeft=10;" parent="p7_1" vertex="1">
+                    <mxGeometry x="560" y="250" width="560" height="52" as="geometry"/>
+                </mxCell>
+                <mxCell id="p7_rapp" value="config.py · ingest.py (EF3) · query.py (EF4) · benchmark_chunking.py (D10) · logutil.py (S4) · api.py + static/ (phase 2) — monté RO" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;align=left;spacingLeft=10;" parent="p7_1" vertex="1">
+                    <mxGeometry x="560" y="304" width="560" height="48" as="geometry"/>
+                </mxCell>
+                <mxCell id="p7_rsec" value="anonymize.py (S6) · injection_guard.py (S7) · integrity.py (S8) · output_filter.py (S9)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;align=left;spacingLeft=10;" parent="p7_1" vertex="1">
+                    <mxGeometry x="560" y="360" width="560" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="p7_rscr" value="01_provision.ps1 (P1 : images · modèles · dataset · 2 clés + mots de passe) · 02_up.ps1 (P2) · 03_verify_isolation.ps1 (P3 / S1) · 04_demos.ps1 (8 démos)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;align=left;spacingLeft=10;" parent="p7_1" vertex="1">
+                    <mxGeometry x="560" y="406" width="560" height="52" as="geometry"/>
+                </mxCell>
+                <mxCell id="p7_rdata" value="dataset HuggingFace neural-bridge/rag-dataset-12000 — monté RO — NON VERSIONNÉ" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;align=left;spacingLeft=10;" parent="p7_1" vertex="1">
+                    <mxGeometry x="560" y="464" width="560" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="p7_rsecr" value="secrets = FICHIERS montés RO (jamais des variables d&#39;env) : clés chiffrement (pgcrypto) + intégrité (HMAC, D11) · mots de passe rag_admin/ingest/reader (+ rag_auditor · jetons API et admin, phase 2) — NON VERSIONNÉ" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;align=left;spacingLeft=10;" parent="p7_1" vertex="1">
+                    <mxGeometry x="560" y="510" width="560" height="52" as="geometry"/>
+                </mxCell>
+                <mxCell id="p7_rlogs" value="journaux applicatifs JSON — NON VERSIONNÉ" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;align=left;spacingLeft=10;" parent="p7_1" vertex="1">
+                    <mxGeometry x="560" y="568" width="560" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="p7_rres" value="tableau_prompt_reponse.md (EF7 · EF8) · benchmark_chunking.md (D10) · demos_securite.md · captures/" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;align=left;spacingLeft=10;" parent="p7_1" vertex="1">
+                    <mxGeometry x="560" y="620" width="560" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="p7_rrap" value="rapport.md → rapport_final.pdf (livrable unique, français) · figures/ (exports des diagrammes)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;align=left;spacingLeft=10;" parent="p7_1" vertex="1">
+                    <mxGeometry x="560" y="672" width="560" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="p7_h1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;strokeColor=#999999;exitX=0.1;exitY=1;entryX=0;entryY=0.5;" parent="p7_1" source="p7_root" target="p7_conc" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p7_h2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;strokeColor=#999999;exitX=0.1;exitY=1;entryX=0;entryY=0.5;" parent="p7_1" source="p7_root" target="p7_secu" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p7_h3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;strokeColor=#999999;exitX=0.1;exitY=1;entryX=0;entryY=0.5;" parent="p7_1" source="p7_root" target="p7_res" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p7_h4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;strokeColor=#999999;exitX=0.1;exitY=1;entryX=0;entryY=0.5;" parent="p7_1" source="p7_root" target="p7_rap" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p7_h5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;strokeColor=#999999;exitX=0.1;exitY=1;entryX=0;entryY=0.5;" parent="p7_1" source="p7_secu" target="p7_ddb" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p7_h6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;strokeColor=#999999;exitX=0.1;exitY=1;entryX=0;entryY=0.5;" parent="p7_1" source="p7_secu" target="p7_dapp" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p7_h7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;strokeColor=#999999;exitX=0.1;exitY=1;entryX=0;entryY=0.5;" parent="p7_1" source="p7_secu" target="p7_app" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p7_h8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;strokeColor=#999999;exitX=0.1;exitY=1;entryX=0;entryY=0.5;" parent="p7_1" source="p7_app" target="p7_sec" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p7_h9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;strokeColor=#999999;exitX=0.1;exitY=1;entryX=0;entryY=0.5;" parent="p7_1" source="p7_secu" target="p7_scr" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p7_h10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;strokeColor=#999999;exitX=0.1;exitY=1;entryX=0;entryY=0.5;" parent="p7_1" source="p7_secu" target="p7_data" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p7_h11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;strokeColor=#999999;exitX=0.1;exitY=1;entryX=0;entryY=0.5;" parent="p7_1" source="p7_secu" target="p7_secr" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p7_h12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;strokeColor=#999999;exitX=0.1;exitY=1;entryX=0;entryY=0.5;" parent="p7_1" source="p7_secu" target="p7_logs" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p7_l1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;dashed=1;strokeColor=#cccccc;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" parent="p7_1" source="p7_conc" target="p7_rconc" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p7_l2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;dashed=1;strokeColor=#cccccc;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" parent="p7_1" source="p7_secu" target="p7_rsecu" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p7_l3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;dashed=1;strokeColor=#cccccc;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" parent="p7_1" source="p7_ddb" target="p7_rddb" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p7_l4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;dashed=1;strokeColor=#cccccc;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" parent="p7_1" source="p7_dapp" target="p7_rdapp" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p7_l5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;dashed=1;strokeColor=#cccccc;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" parent="p7_1" source="p7_app" target="p7_rapp" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p7_l6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;dashed=1;strokeColor=#cccccc;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" parent="p7_1" source="p7_sec" target="p7_rsec" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p7_l7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;dashed=1;strokeColor=#cccccc;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" parent="p7_1" source="p7_scr" target="p7_rscr" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p7_l8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;dashed=1;strokeColor=#cccccc;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" parent="p7_1" source="p7_data" target="p7_rdata" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p7_l9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;dashed=1;strokeColor=#cccccc;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" parent="p7_1" source="p7_secr" target="p7_rsecr" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p7_l10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;dashed=1;strokeColor=#cccccc;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" parent="p7_1" source="p7_logs" target="p7_rlogs" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p7_l11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;dashed=1;strokeColor=#cccccc;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" parent="p7_1" source="p7_res" target="p7_rres" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p7_l12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;dashed=1;strokeColor=#cccccc;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" parent="p7_1" source="p7_rap" target="p7_rrap" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

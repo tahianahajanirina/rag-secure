@@ -1,0 +1,61 @@
+# ============================================================================
+# compose.bootstrap.yaml — P1 provisioning : réseau OUVERT, une seule fois
+# (SPEC §3.1 — lancé par scripts/01_provision.ps1, Internet requis)
+# ----------------------------------------------------------------------------
+# Rôle unique : télécharger les deux modèles Ollama dans le volume
+# `rag_ollama_models` (le MÊME volume externe que compose.yaml — identité
+# critique). Aucune donnée applicative n'est ingérée ici.
+# Le build des images app/db se fait via `docker compose -f compose.yaml build`
+# (un build n'a pas besoin du réseau runtime).
+#
+# Usage : docker compose -f compose.bootstrap.yaml run --rm bootstrap-models
+# ============================================================================
+name: rag-secure-bootstrap
+
+services:
+  bootstrap-models:
+    image: ollama/ollama:0.9.0   # même tag épinglé que compose.yaml
+    # Réseau par défaut (bridge, Internet autorisé) : c'est le POINT UNIQUE
+    # où le projet touche Internet (avec download_dataset.py côté hôte).
+    # IPv6 DÉSACTIVÉ dans le conteneur : le bridge Docker/WSL2 n'a pas de
+    # route IPv6, or Ollama tente le CDN Cloudflare en IPv6 → « network is
+    # unreachable ». On force l'IPv4 (qui fonctionne) pour le pull des modèles.
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=1
+      - net.ipv6.conf.default.disable_ipv6=1
+    volumes:
+      - ollama_models:/root/.ollama
+    environment:
+      LLM_MODEL: ${LLM_MODEL:-llama3.1:8b}
+      EMBED_MODEL: ${EMBED_MODEL:-nomic-embed-text}
+    entrypoint: ["/bin/sh", "-c"]
+    # `ollama pull` dialogue avec un démon local : on le lance en arrière-plan,
+    # on attend qu'il réponde (boucle sur `ollama list`, jamais curl — absent
+    # de l'image), on pull les deux modèles, puis on s'arrête.
+    command:
+      - |
+        ollama serve &
+        server_pid=$$!
+        tries=0
+        until ollama list >/dev/null 2>&1; do
+          tries=$$((tries + 1))
+          if [ "$$tries" -gt 30 ]; then
+            echo "ERREUR : le serveur Ollama local ne repond pas" >&2
+            exit 1
+          fi
+          sleep 2
+        done
+        echo "--- pull $${LLM_MODEL}" &&
+        ollama pull "$${LLM_MODEL}" &&
+        echo "--- pull $${EMBED_MODEL}" &&
+        ollama pull "$${EMBED_MODEL}" &&
+        echo "--- modeles presents dans le volume :" &&
+        ollama list &&
+        kill "$$server_pid"
+
+volumes:
+  # LE MÊME volume que compose.yaml (external + name identiques) —
+  # créé au préalable par 01_provision.ps1 : docker volume create rag_ollama_models
+  ollama_models:
+    external: true
+    name: rag_ollama_models

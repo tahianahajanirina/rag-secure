@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<!-- Phase 2 — Tableau d'audit /admin (F13, D13).
+     GABARIT rendu CÔTÉ SERVEUR par api.py : les marqueurs %%...%% sont
+     remplacés par des fragments dont CHAQUE valeur est passée par
+     html.escape (anti-XSS : cette page affiche des chaînes contrôlées par
+     l'attaquant — motifs d'injection, source_ref…).
+     ZÉRO JavaScript (même inline) ; rafraîchissement par meta http-equiv. -->
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="refresh" content="30">
+  <title>RAG sécurisé — audit</title>
+  <style>
+    :root { color-scheme: light dark; }
+    body { font-family: system-ui, sans-serif; max-width: 70rem; margin: 2rem auto;
+           padding: 0 1rem; line-height: 1.45; }
+    h1 { font-size: 1.4rem; } h2 { font-size: 1.1rem; margin-top: 1.6rem; }
+    table { border-collapse: collapse; width: 100%; font-size: .92rem; }
+    th, td { border: 1px solid #8885; padding: .35rem .55rem; text-align: left;
+             vertical-align: top; word-break: break-word; }
+    th { background: #8882; }
+    .info { color: #666; font-size: .9rem; }
+    footer { margin-top: 2rem; font-size: .8rem; color: #888; }
+  </style>
+</head>
+<body>
+  <h1>Tableau d'audit — lecture seule (rôle rag_auditor)</h1>
+  <p class="info">Généré côté serveur le %%GENERATED_AT%% (UTC) —
+    rafraîchissement automatique toutes les 30 s. Les journaux fichiers
+    (pgaudit, app.jsonl) restent la source de vérité probante.</p>
+
+  <h2>Santé</h2>
+  <table>
+    <thead><tr><th>Composant / indicateur</th><th>État</th></tr></thead>
+    <tbody>%%HEALTH_ROWS%%</tbody>
+  </table>
+
+  <h2>Alertes de sécurité</h2>
+  <table>
+    <thead><tr><th>Indicateur</th><th>Compteur</th></tr></thead>
+    <tbody>%%ALERT_ROWS%%</tbody>
+  </table>
+
+  <h2>Quarantaine — 10 dernières entrées, métadonnées seules</h2>
+  <table>
+    <thead><tr><th>Détecté le</th><th>Source</th><th>Score</th><th>Motifs</th></tr></thead>
+    <tbody>%%QUARANTINE_ROWS%%</tbody>
+  </table>
+
+  <h2>Activité d'ingestion (rag.ingest_log) — 20 dernières opérations</h2>
+  <table>
+    <thead><tr><th>Horodatage</th><th>Opération</th><th>Détail</th><th>ref_sha256</th></tr></thead>
+    <tbody>%%ACTIVITY_ROWS%%</tbody>
+  </table>
+
+  <h2>Requêtes récentes (journal applicatif)</h2>
+  <table>
+    <thead><tr><th>Horodatage</th><th>request_id</th><th>Mode</th>
+      <th>Chunks</th><th>Durée (s)</th></tr></thead>
+    <tbody>%%QUERY_ROWS%%</tbody>
+  </table>
+
+  <h2>Pseudonymisation — agrégats pii_stats du corpus</h2>
+  <table>
+    <thead><tr><th>Catégorie</th><th>Occurrences remplacées</th></tr></thead>
+    <tbody>%%PII_ROWS%%</tbody>
+  </table>
+
+  <footer>DATA707 — accès : en-tête X-Admin-Token (jeton DISTINCT du jeton
+    de requête) · aucun contenu de document n'est lisible ici (GRANT par
+    colonne, jamais content_enc).</footer>
+</body>
+</html>
